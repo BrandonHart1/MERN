@@ -20,9 +20,10 @@ function App() {
           <h1>Favorite Authors</h1>
           <Switch>
             <Route exact path="/">
-              <AuthorForm/>
-              <hr />
               <AllAuthors/>
+            </Route>
+            <Route exaxt path="/new">
+              <AuthorForm/>
             </Route>
             <Route exact path="/edit/:_id">
               <EditAuthorForm/>

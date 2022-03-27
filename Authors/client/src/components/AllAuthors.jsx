@@ -6,16 +6,15 @@ import {useHistory } from "react-router-dom"
 
 
 import {
-    BrowserRouter,
-    Switch,
-    Route,
     Link // anchor tag without refreshing the page
 } from "react-router-dom";
 
 
-const AllAuthors = (props) => {
+const AllAuthors = () => {
 
     const [authorList, setAuthorList] = useState([])
+
+    const [name, setName] = useState("")
 
     const { _id } = useParams();
 
@@ -35,7 +34,7 @@ const AllAuthors = (props) => {
 
     }, [])
 
-    const deleteAuthor = (authorId) => {
+    const deleteAuthor = (info) => {
         axios.delete(`http://localhost:8000/api/authors/${_id}`)
             .then(res => {
                 console.log("Results: ", res)
@@ -55,25 +54,25 @@ const AllAuthors = (props) => {
             {
                 authorList.map((authorObj) => {
                     return (
-                        <form>
                             <table className="table" key = {authorObj._id}>
                                 <thead className="thead-light">
                                     <tr>
+                                    <th></th>
                                         <th>Author</th>
                                         <th>Actions Available</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
+                                    <th scope="row"></th>
                                         <td>{authorObj.name}</td>
                                         <td>
-                                        <Link to={`/edit/${authorObj._id.name}`} className='btn btn-secondary'>Edit</Link>
-                                        <button onClick = {deleteAuthor} className='btn btn-danger'>Delete {info.name}</button>                                 
+                                        <Link to={`${authorObj._id}`} className='btn btn-secondary'>Edit</Link>
+                                        <button onClick = {deleteAuthor} className='btn btn-danger'>Delete {name}</button>                                 
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
-                        </form> 
                         
                     )
                 })

@@ -7,53 +7,43 @@ import {
     Link // anchor tag without refreshing the page
 } from "react-router-dom";
 
-const EditAuthorForm = (props) => {
 
-    let [authorInfo, setAuthorInfo] = useState({
-        name: ""
-    });
+const EditAuthorForm = () => {
 
+    let [name, setName] = useState("")
+    
     const {_id} = useParams();
+    
+    let [formErrors, setFormErrors] = useState({})
 
     const history = useHistory();
 
     useEffect(() => {
         axios.get(`http://localhost:8000/api/authors/${_id}`)
-            .then(res => {
-                console.log("Response: ", res);
-                setAuthorInfo(res.data.results)
-                
-            })
-            .catch(err => {
-                console.log("Error: ", err)
-            })
-    }, [])
-
-    const changeHandler = (e) => {
-        setAuthorInfo({
-            ...authorInfo,
-            [e.target.name]: e.target.value
+        .then(res => {
+            console.log("Response: ", res);
+            setName(res.data.results.name)
+            
         })
-    }
+        .catch(err => {
+            console.log("Error: ", err)
+        })
+    }, [])
+    console.log(_id)    
 
     const updateAuthor =(e) => {
         e.preventDefault();
 
-        axios.put(`http://localhost:8000/api/author/${_id}`)
+        let authorInfo = {name}
+
+        axios.put(`http://localhost:8000/api/authors/edit/${_id}`, authorInfo)
             .then(res => {
                 console.log("Response: ", res)
-                history.push("/")
-            })
-            .catch(err => {
-                console.log("Error: ", err)
-            })
-    }
-
-    const deleteAuthor =(e) => {
-        axios.delete(`http://localhost:8000/api/authors/${_id}`)
-            .then(res => {
-                console.log("Deleted: ", res)
-                history.push("/")
+                if(res.data.error) {
+                    setFormErrors(res.data.error.errors);
+                }else{
+                    history.push("/")
+                }
             })
             .catch(err => {
                 console.log("Error: ", err)
@@ -68,10 +58,11 @@ const EditAuthorForm = (props) => {
                     <h5>Edit This Author:</h5>
                 </div>
                 <div className="container">
-                    <label htmlFor="">{_id}</label>
-                    {/* <input type="text" name="name" className="form-control" onChange={changeHandler} value={authorInfo.name}/> */}
+                <p className='text-danger'>{formErrors.name?.message}</p>
+                    <label htmlFor="" ></label>
+                    <input type="text" name="name" className="form-control" value={name} onChange={(e)=>{setName(e.target.value)}}/>
                 </div>
-                    <input type="submit" value="Cancel" />
+                    <Link to={"/"}>Cancel</Link>
                     <input type="submit" value="Submit"/>
             </form>
         </div>
