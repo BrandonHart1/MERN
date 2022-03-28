@@ -14,8 +14,6 @@ const AllAuthors = () => {
 
     const [authorList, setAuthorList] = useState([])
 
-    const [name, setName] = useState("")
-
     const { _id } = useParams();
 
     const [info, setInfo] = useState([])
@@ -34,16 +32,21 @@ const AllAuthors = () => {
 
     }, [])
 
-    const deleteAuthor = (info) => {
-        axios.delete(`http://localhost:8000/api/authors/${_id}`)
+    const deleteAuthor = (idOfAuthor) => {
+        axios.delete(`http://localhost:8000/api/authors/${idOfAuthor}`)
             .then(res => {
                 console.log("Results: ", res)
-                history.push("/");
+                // history.push("/");
+                let filteredList = authorList.filter((authorObj) => {
+                    return authorObj._id != idOfAuthor // return the author that is not the id of the author deleted
+                })
+                setAuthorList(filteredList)
             })
             .catch(err => {
-                console.log("Error: ", err)
+                console.log("Error: " , err)
             })
     }
+
 
 
     return (
@@ -51,10 +54,7 @@ const AllAuthors = () => {
             <h2>All Authors</h2>
             <h5>We Have Quotes By:</h5>
             <Link to={"/authors/new"}>Add an Author</Link>
-            {
-                authorList.map((authorObj) => {
-                    return (
-                            <table className="table" key = {authorObj._id}>
+                            <table className="table" >
                                 <thead className="thead-light">
                                     <tr>
                                     <th></th>
@@ -63,20 +63,24 @@ const AllAuthors = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
+                                    {
+                                        authorList.map((authorObj) => {
+                                            return (
+                                    <tr key = {authorObj._id}>
                                     <th scope="row"></th>
                                         <td>{authorObj.name}</td>
                                         <td>
-                                        <Link to={`${authorObj._id}`} className='btn btn-secondary'>Edit</Link>
-                                        <button onClick = {deleteAuthor} className='btn btn-danger'>Delete {name}</button>                                 
+                                        <Link to={`/authors/edit/${authorObj._id}`} className='btn btn-secondary'>Edit</Link>
+                                        <button onClick = {()=>deleteAuthor(authorObj._id)} className='btn btn-danger'>Delete</button>                                 
                                         </td>
                                     </tr>
+                                        )
+                                    })
+                                }
                                 </tbody>
                             </table>
                         
-                    )
-                })
-            }
+    
         </div>
     );
 };

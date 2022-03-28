@@ -22,10 +22,10 @@ function App() {
             <Route exact path="/">
               <AllAuthors/>
             </Route>
-            <Route exaxt path="/new">
+            <Route exaxt path="/authors/new">
               <AuthorForm/>
             </Route>
-            <Route exact path="/edit/:_id">
+            <Route exact path="/authors/edit/:_id">
               <EditAuthorForm/>
             </Route>
           </Switch>
